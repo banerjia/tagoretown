@@ -1,0 +1,104 @@
+from django.db import models
+from django.contrib import admin
+from django.utils import timezone
+from django.contrib.contenttypes.fields \
+    import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.models import ContentType
+import locale
+
+# Create your models here.
+
+locale.setlocale(locale.LC_ALL, '')
+
+
+class Image(models.Model):
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    title = models.CharField(max_length=150)
+    image_cdn_url = models.URLField("Image URL", max_length=200)
+    notes = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.title
+
+
+class Customer(models.Model):
+    name = models.CharField(max_length=150)
+    corp = models.CharField(max_length=255, blank=True)
+    email = models.EmailField(max_length=254, db_index=True, unique=True)
+    password = models.CharField(max_length=255)
+    date_added = models.DateTimeField(auto_now_add=True)
+    last_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['-date_added']
+
+
+class CustomerAdmin(admin.ModelAdmin):
+    list_display = ('name', 'corp', 'email')
+
+
+class Invoice(models.Model):
+    customer = models.ForeignKey('Customer')
+    number = models.CharField(max_length=50)
+    amount = models.DecimalField(decimal_places=2, max_digits=10)
+    balance_due = models.DecimalField(decimal_places=2, max_digits=10)
+    paid = models.BooleanField(default=False)
+    due_date = models.DateField(default=None, null=True, blank=True)
+    date_paid = models.DateField(default=None, null=True, blank=True)
+    date_added = models.DateTimeField(auto_now_add=True)
+    last_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.number
+
+    def status(self):
+        if(self.paid):
+            retval = "Paid"
+        elif(self.due_date is not None and self.due_date > timezone.now()):
+            retval = "Overdue"
+        else:
+            retval = "Unpaid"
+
+        return retval
+
+
+class Transaction(models.Model):
+    invoice = models.ForeignKey('Invoice')
+    amount = models.DecimalField(decimal_places=2, max_digits=10)
+    payment_type = models.CharField(max_length=30, default="Cheque")
+    notes = models.TextField()
+    images = GenericRelation(Image)
+    date_added = models.DateTimeField("Transaction Date", blank=True)
+    last_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return 'Transaction for {0} on {1:%B %d, %Y}'.format(
+            self.invoice.number,
+            self.date_added)
+
+
+class TransactionAdmin(admin.ModelAdmin):
+    list_display = [
+        'date_added', 'invoice_number', 'invoice_amount', 'formatted_amount']
+
+    def invoice_number(self, obj):
+        return obj.invoice.number
+
+    invoice_number.short_description = "Invoice Number"
+
+    def formatted_amount(self, obj):
+        return locale.currency(obj.amount, grouping=True)
+
+    formatted_amount.short_description = "Transaction Amount"
+    formatted_amount.admin_order_field = "amount"
+
+    def invoice_amount(self, obj):
+        return locale.currency(obj.invoice.amount, grouping=True)
+
+    invoice_amount.short_description = "Invoiced Amount"
+    invoice_amount.admin_order_field = "invoice__amount"

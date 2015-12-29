@@ -11,13 +11,30 @@ import locale
 locale.setlocale(locale.LC_ALL, '')
 
 
+class Note(models.Model):
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    title = models.CharField(max_length=150)
+    text = models.TextField(blank=True)
+    isEditable = models.BooleanField(default=True)
+    isRemovable = models.BooleanField(default=True)
+    date_added = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-date_added"]
+
+    def __str__(self):
+        return self.title
+
+
 class Image(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
     title = models.CharField(max_length=150)
     image_cdn_url = models.URLField("Image URL", max_length=200)
-    notes = models.TextField(blank=True)
+    notes = GenericRelation(Note)
 
     def __str__(self):
         return self.title
@@ -30,6 +47,7 @@ class Customer(models.Model):
         max_length=255, null=False, db_index=True, unique=True)
     email = models.EmailField(max_length=254, db_index=True)
     password = models.CharField(max_length=255)
+    notes = GenericRelation(Note)
     date_added = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
 
@@ -46,12 +64,13 @@ class CustomerAdmin(admin.ModelAdmin):
 
 class Invoice(models.Model):
     customer = models.ForeignKey('Customer')
-    number = models.CharField(max_length=50)
+    number = models.CharField('Invoice #', max_length=50)
     amount = models.DecimalField(decimal_places=2, max_digits=10)
     balance_due = models.DecimalField(decimal_places=2, max_digits=10)
     paid = models.BooleanField(default=False)
     due_date = models.DateField(default=None, null=True, blank=True)
     date_paid = models.DateField(default=None, null=True, blank=True)
+    notes = GenericRelation(Note)
     date_added = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
 
@@ -61,7 +80,7 @@ class Invoice(models.Model):
     def status(self):
         if(self.paid):
             retval = "Paid"
-        elif(self.due_date is not None and self.due_date > timezone.now()):
+        elif(self.due_date is not None and self.due_date < timezone.now()):
             retval = "Overdue"
         else:
             retval = "Unpaid"
@@ -73,7 +92,7 @@ class Transaction(models.Model):
     invoice = models.ForeignKey('Invoice')
     amount = models.DecimalField(decimal_places=2, max_digits=10)
     payment_type = models.CharField(max_length=30, default="Cheque")
-    notes = models.TextField()
+    notes = GenericRelation(Note)
     images = GenericRelation(Image)
     date_added = models.DateTimeField("Transaction Date", blank=True)
     last_updated = models.DateTimeField(auto_now=True)

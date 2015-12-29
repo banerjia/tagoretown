@@ -1,38 +1,37 @@
 {% extends "oam/layout.html" %}
-{% load formatfilters %}
 
 {% block content %}
-<div class="row">
-	<div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-		<div class="panel panel-default">
-			<div class="panel-heading"><h2 class="h2">Invoices</h2></div>
-			<div class="panel-body">
-				{% if invoice_list %}
-					<table class="table table-condensed">
-						<thead>
-							<tr>
-								<th scope="col">Invoice Number</th>
-								<th scope="col">Amount</th>
-								<th scope="col">Balance Due</th>
-								<th scope="col">Date</th>
-							</tr>
-						</thead>
-						<tbody>
-							{% for invoice in invoice_list %}
-							<tr>
-								<td><a href="{% url "oam:detail" customer_url_id invoice.id %}">{{ invoice.number }}</a></td>
-								<td>{{ invoice.amount|currency }}</td>
-								<td>{{ invoice.balance_due|currency }}</td>
-								<td>{{ invoice.date_added|date:"F j, Y" }}</td>
-							</tr>
-							{% endfor %}
-						</tbody>
-					</table>					
-				{% else %}
-					<p class="alert alert-warning">No invoices available</p>
-				{% endif %}
+	{% if invoices_unpaid %}
+		<div class="row">
+			<div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+				<h3 class="h3">Outstanding Invoices</h3>
+				{% include "oam/invoice_list.html" with invoice_list=invoices_unpaid %}
+			</div>
+		</div>	
+	{% endif %}
+
+	{% if invoices_paid %}	
+		<div class="row">
+			<div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+				<h3 class="h3">Paid Invoices</h3>
+				{% include "oam/invoice_list.html" with invoice_list=invoices_paid %}
 			</div>
 		</div>
-	</div>
-</div>
+	{% endif %}
+{% endblock %}
+
+{% block styling %}
+<style type="text/css">
+	div#content_section 
+		table[data-listing-type="invoices"] 
+			tbody 
+				tr 
+					td:first-child,
+	div#content_section 
+		table[data-listing-type="invoices"] 
+			td[data-data-type="currency"]
+	{
+						text-align: right;
+	}
+</style>
 {% endblock %}

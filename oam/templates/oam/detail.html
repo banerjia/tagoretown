@@ -4,75 +4,116 @@
 
 {% block styling %}	
 		{% stylesheet 'app' %}
+		<style type="text/css" media="screen,projection">
+			div#content_section div.row{
+				margin-bottom: 0.5em;
+			}
+			.text-white
+			{
+				color: #ffffff;
+			}
+			.label{
+				font-size: 100%;
+				line-height: 2.2;
+			}
+			.label-danger{
+				background-color: #ff4f52;
+			}
+			.label-success{
+				background-color: #06A209;
+			}
+		</style>
 {% endblock %}
 
 {% block content %}
 	<div class="row">
 		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-			<div class="panel panel-default panel-sm">
-				<div class="panel-heading">
-					<h2 class="h4" style="display: inline-block">Invoice Details</h2>
-					<span class="pull-right">{{ invoice.status }}</span> 
-				</div>
-				<div class="panel-body panel-body-detail">
-					<div class="row">
-						<div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 entry-label">Date</div>
-						<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 entry-value">{{ invoice.date_added|date:"m/j/Y" }}</div>
-					</div>
-					<div class="row">
-						<div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 entry-label">Company</div>
-						<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 entry-value">{{ customer.corp|title }}</div>
-					</div>
-					<div class="row">
-						<div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 entry-label">Invoice Date</div>
-						<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 entry-value">{{ invoice.date_added|date:"m/j/Y"|default:"No due date"  }}</div>
-					</div>
-					<div class="row">
-						<div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 entry-label">Due Date</div>
-						<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 entry-value">{{ invoice.due_date|date:"m/j/Y"|default:"No due date"  }}</div>
-					</div>
-					<div class="row">
-						<div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 entry-label">Amount</div>
-						<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 entry-value">{{ invoice.amount|currency }}</div>
-					</div>
-					<div class="row">
-						<div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 entry-label">Balance Due</div>
-						<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 entry-value">{{ invoice.balance_due|currency }}</div>
-					</div>
-					<div class="row">
-						<div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 entry-label">Status</div>
-						<div class="col-lg-1 col-md-1 col-sm-12 col-xs-12 entry-value {% ifequal invoice.status "Overdue" %}text-danger{% endifequal %}">{{ invoice.status }}</div>
-					</div>
+			<div class="row">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<a class="breadcrumbs" href="{% url "oam:index" invoice.customer.corp_url_id %}">
+						Dashboard
+					</a>
+					&gt; Invoice Details
 				</div>
 			</div>
-			<div class="panel panel-default">
-				<div class="panel-heading"><h2 class="h4">Related Transactions</h2></div>
-				<div class="panel-body">
+			<div class="row">
+				<div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
 					<table class="table table-condensed">
 						<thead>
 							<tr>
+								<th style="width:5%"></th>
+								<th scope="col">Invoice Date</th>
+								<th scope="col">Company</th>
+								<th scope="col">Amount</th>
+								<th scope="col">Balance Due</th>
+								<th scope="col">Due Date</th>
+								<th scope="col">Status</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									<button class="btn btn-primary" type="button" title="Edit Invoice">
+										<i class="fa fa-edit"></i>
+									</button>
+								</td>
+								<td>{{ invoice.date_added|date:"m/j/Y" }}</td>
+								<td>{{ customer.corp|title }}</td>
+								<td>{{ invoice.amount|currency }}</td>
+								<td>{{ invoice.balance_due|currency }}</td>
+								<td>{{ invoice.due_date|date:"m/j/Y"|default:"No due date"  }}</td>
+								<td style="font-weight: bold" class="text-uppercase {% ifequal invoice.status "Unpaid" %}label label-danger{% endifequal %}{% ifequal invoice.status "Paid" %}bg-success text-white{% endifequal %}">{{ invoice.status }}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			{% if invoice.notes != None %}
+			<div class="row">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<h3 class="h3">Notes</h3>
+
+					{% include "oam/invoice_note.html" with notes=invoice_notes %}
+				</div>
+			</div>
+			{% endif %}
+			<div class="row">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<table class="table table-condensed table-striped table-bordered">
+						<caption style="font-weight: bold">Related Transactions</caption>
+						<thead>
+							<tr>
+								<th style="width: 5%"></th>
 								<th scope="col">Date</th>
 								<th scope="col">Amount</th>
 								<th scope="col">Payment Method</th>
+								<th style="width: 5%"></th>
 							</tr>
 						</thead>
 						<tbody>
 							{% for transaction in related_transactions %}
 								<tr>
-									<td>{{ transaction.date_added|date:"N j, Y T" }}</td>
+									<td class="text-right">
+										<button class="btn btn-default btn-sm" title="View">
+											<i class="fa fa-sm fa-file-o"></i>
+											</button>
+									</td>
+									<td>{{ transaction.date_added|date:"m/j/y" }}</td>
 									<td>{{ transaction.amount|currency }}</td>
 									<td>{{ transaction.payment_type }}</td>
+									<td>
+										<button class="btn btn-danger btn-sm" title="Delete"><i class="fa fa-sm fa-trash"></i></button>
+									</td>
 								</tr>
 							{% empty %}
 								<tr>
-									<td colspan="3">No related transactions recorded</td>
+									<td colspan="4">No related transactions recorded</td>
 								</tr>
 							{% endfor %}
 						</tbody>
 					</table>
 				</div>
 			</div>
-
 		</div>
 	</div>
 {% endblock content %}

@@ -1,0 +1,26 @@
+{% load formatfilters %}
+
+{% if invoice_list %}
+    <table class="table table-bordered table-striped" data-listing-type="invoices">
+        <thead>
+            <tr>
+                <th scope="col" style="width:12%">Invoice #</th>
+                <th scope="col">Date</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Balance Due</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for invoice in invoice_list %}
+            <tr>
+                <td><a href="{% url "oam:detail" invoice.customer.corp_url_id invoice.id %}">{{ invoice.number }}</a></td>
+                <td>{{ invoice.date_added|date:"m/j/y" }}</td>
+                <td data-data-type="currency">{{ invoice.amount|currency }}</td>
+                <td data-data-type="currency">{{ invoice.balance_due|currency }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>                    
+{% else %}
+    <p>No invoices available</p>
+{% endif %}

@@ -1,8 +1,9 @@
-{% load staticfiles %}
+{% load pipeline %}
+
 <html>
 	<head>
 		<title>{{ title|default:'Tagore Town > OAM' }}</title>
-		<link rel="stylesheet" href="{% static "bootstrap/css/bootstrap.min.css" %}"/>
+		{% stylesheet 'vendor' %}
 		{% block styling %}
 		{% endblock styling %}
 	</head>
@@ -20,6 +21,7 @@
 					{% endblock content %}
 				</div>
 			</div>
-		</div>		
+		</div>	
+		{% javascript 'app' %}	
 	</body>
 </html>

@@ -7,7 +7,7 @@
 		<div class="panel panel-default">
 			<div class="panel-heading"><h2 class="h2">Invoices</h2></div>
 			<div class="panel-body">
-				{% if True %}
+				{% if invoice_list %}
 					<table class="table table-condensed">
 						<thead>
 							<tr>
@@ -20,7 +20,7 @@
 						<tbody>
 							{% for invoice in invoice_list %}
 							<tr>
-								<td><a href="{% url "oam:detail" customer invoice.id %}">{{ invoice.number }}</a></td>
+								<td><a href="{% url "oam:detail" customer_url_id invoice.id %}">{{ invoice.number }}</a></td>
 								<td>{{ invoice.amount|currency }}</td>
 								<td>{{ invoice.balance_due|currency }}</td>
 								<td>{{ invoice.date_added|date:"F j, Y" }}</td>

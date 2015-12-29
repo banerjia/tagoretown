@@ -26,7 +26,9 @@ class Image(models.Model):
 class Customer(models.Model):
     name = models.CharField(max_length=150)
     corp = models.CharField(max_length=255, blank=True)
-    email = models.EmailField(max_length=254, db_index=True, unique=True)
+    corp_url_id = models.CharField(
+        max_length=255, null=False, db_index=True, unique=True)
+    email = models.EmailField(max_length=254, db_index=True)
     password = models.CharField(max_length=255)
     date_added = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)

@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from oam.models import Customer, Invoice
+from .forms import InvoiceForm
 
 return_dict = {
     'title': None,
@@ -33,3 +34,29 @@ def detail(request, customer_url_id, pk):
         .order_by("-date_added"),
         'customer': selected_invoice.customer,
     })
+
+
+def edit_invoice(request, customer_url_id, pk):
+    if(request.POST):
+        pass
+    else:
+        invoice = Invoice.objects.get(pk=pk)
+        form = InvoiceForm({
+            'number': invoice.number,
+            'amount': invoice.amount,
+            'date_added': invoice.date_added})
+
+    return_dict.update({'form': form})
+    return render(request, "oam/edit_invoice.html", return_dict)
+
+
+def new_invoice(request, customer_url_id):
+    if(request.POST):
+        form = InvoiceForm(request)
+    else:
+        form = InvoiceForm()
+
+    return_dict.update({
+        'title': 'New Invoice',
+        'form': form})
+    return render(request, "oam/edit_invoice.html", return_dict)

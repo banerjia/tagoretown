@@ -44,7 +44,10 @@ class Customer(models.Model):
     name = models.CharField(max_length=150)
     corp = models.CharField(max_length=255, blank=True)
     corp_url_id = models.CharField(
-        max_length=255, null=False, db_index=True, unique=True)
+        max_length=255,
+        null=False,
+        db_index=True,
+        unique=True)
     email = models.EmailField(max_length=254, db_index=True)
     password = models.CharField(max_length=255)
     notes = GenericRelation(Note)

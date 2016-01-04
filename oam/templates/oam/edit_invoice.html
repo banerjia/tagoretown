@@ -1,11 +1,20 @@
 {% extends "oam/layout.html" %}
-{% load pipeline %}
+{% load staticfiles %}
+
+{% block styling %}
+    <link rel="stylesheet" type="text/css" href="{% static "app/css/detail.css" %}"/>  
+{% endblock styling %}
 
 {% block content %}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <form action="{% url "oam:edit_invoice" customer_url_id='graeters' pk=1 %}" method="POST">
+            <form method="POST" id="frmEditInvoice">
                 {% csrf_token %}
+                <div class="row form-buttons">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <button class="btn btn-success">Save</button>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 entry-field">
                         {{ form.number.label_tag }}
@@ -16,10 +25,10 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 entry-field">
-                        {{ form.date_added.label_tag }}
+                        {{ form.customer.label_tag }}
                     </div>
                     <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12 entry-value">
-                        {{ form.date_added }}
+                        {{ form.customer }}
                     </div>
                 </div>
                 <div class="row">
@@ -29,8 +38,34 @@
                     <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12 entry-value">
                         {{ form.amount }}
                     </div>
-                </div>                
+                </div>    
+                <div class="row">
+                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 entry-field">
+                        {{ form.paid.label_tag }}
+                    </div>
+                    <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12 entry-value">
+                        {{ form.paid }}
+                    </div>
+                </div>   
+                <div class="row">
+                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 entry-field">
+                        {{ form.due_date.label_tag }}
+                    </div>
+                    <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12 entry-value">
+                        {{ form.due_date }}
+                    </div>
+                </div>            
             </form>
         </div>
     </div>
 {% endblock content %}
+
+{% block js %}
+
+<script type="text/javascript">
+$(document).ready(function(){
+    $("form#frmEditInvoice input:text, form#frmEditInvoice select, form#frmEditInvoice textarea").addClass("form-control");
+})
+</script>
+    
+{% endblock js %}

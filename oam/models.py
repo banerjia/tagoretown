@@ -55,14 +55,17 @@ class Customer(models.Model):
     last_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.name
+        return "{} ({})".format(self.name, self.corp)
 
     class Meta:
-        ordering = ['-date_added']
+        ordering = ['name']
 
 
 class CustomerAdmin(admin.ModelAdmin):
     list_display = ('name', 'corp', 'email')
+
+    class Meta:
+        ordering = ['-date_added']
 
 
 class Invoice(models.Model):
@@ -83,7 +86,7 @@ class Invoice(models.Model):
     def status(self):
         if(self.paid):
             retval = "Paid"
-        elif(self.due_date is not None and self.due_date < timezone.now()):
+        elif(self.due_date is not None and self.due_date < timezone.now().date()):
             retval = "Overdue"
         else:
             retval = "Unpaid"
@@ -105,10 +108,16 @@ class Transaction(models.Model):
             self.invoice.number,
             self.date_added)
 
+    class Meta:
+        ordering = ['-date_added']
+
 
 class TransactionAdmin(admin.ModelAdmin):
     list_display = [
-        'date_added', 'invoice_number', 'invoice_amount', 'formatted_amount']
+        'date_added',
+        'invoice_number',
+        'invoice_amount',
+        'formatted_amount', ]
 
     def invoice_number(self, obj):
         return obj.invoice.number

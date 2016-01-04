@@ -4,8 +4,8 @@ from . import views
 
 app_name = "oam"
 urlpatterns = [
-    url(r'^$', views.index, name="index"),
-    url(r'^(?P<pk>[0-9]+)/detail$', views.detail, name="detail"),
-    url(r'^new$', views.new_invoice, name="new_invoice"),
-    url(r'^(?P<pk>[0-9]+)/edit$', views.edit_invoice, name="edit_invoice"),
+    url(r'^invoices/$', views.index, name="index"),
+    url(r'^invoices/new$', views.new, name="new"),
+    url(r'^invoice/(?P<pk>[0-9]+)$', views.detail, name="invoice_detail"),
+    url(r'^invoice/(?P<pk>[0-9]+)/edit$', views.edit, name="invoice_edit"),
 ]

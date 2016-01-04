@@ -1,5 +1,5 @@
 {% extends "oam/layout.html" %}
-{% load pipeline %}
+
 {% load formatfilters %}
 
 {% block styling %}	
@@ -53,9 +53,9 @@
 						<tbody>
 							<tr>
 								<td>
-									<button class="btn btn-primary" type="button" title="Edit Invoice">
+									<a href="{% url "oam:invoice_edit" invoice.customer.corp_url_id invoice.id %}">
 										<i class="fa fa-edit"></i>
-									</button>
+									</a>
 								</td>
 								<td>{{ invoice.date_added|date:"m/j/Y" }}</td>
 								<td>{{ customer.corp|title }}</td>

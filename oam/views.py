@@ -1,13 +1,13 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
+from django.core.urlresolvers import reverse
 from oam.models import Customer, Invoice
 from .forms import InvoiceForm
 
 return_dict = {
     'title': None,
     'customer_name': None,
+    'customer_url_id': None,
 }
-
-# Create your views here.
 
 
 def index(request, customer_url_id):
@@ -36,21 +36,26 @@ def detail(request, customer_url_id, pk):
     })
 
 
-def edit_invoice(request, customer_url_id, pk):
+def edit(request, customer_url_id, pk):
+    invoice = Invoice.objects.get(pk=pk)
     if(request.POST):
-        pass
+        form = InvoiceForm(request.POST, instance=invoice)
+        form.save()
+        return HttpResponseRedirect(
+            reverse("oam:invoice_detail",
+                    kwargs={'customer_url_id': customer_url_id,
+                            'pk': pk}))
     else:
-        invoice = Invoice.objects.get(pk=pk)
-        form = InvoiceForm({
-            'number': invoice.number,
-            'amount': invoice.amount,
-            'date_added': invoice.date_added})
+        form = InvoiceForm(instance=invoice)
 
-    return_dict.update({'form': form})
+    return_dict.update({'form': form,
+                        'customer_url_id': customer_url_id,
+                        'pk': pk
+                        })
     return render(request, "oam/edit_invoice.html", return_dict)
 
 
-def new_invoice(request, customer_url_id):
+def new(request, customer_url_id):
     if(request.POST):
         form = InvoiceForm(request)
     else:
@@ -58,5 +63,7 @@ def new_invoice(request, customer_url_id):
 
     return_dict.update({
         'title': 'New Invoice',
-        'form': form})
+        'form': form,
+        'customer_url_id': customer_url_id
+    })
     return render(request, "oam/edit_invoice.html", return_dict)

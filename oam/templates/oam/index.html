@@ -1,6 +1,7 @@
 {% extends "oam/layout.html" %}
 
 {% block content %}
+	<a href="{% url "oam:invoices_new" customer_url_id %}" class="btn btn-primary">New Invoice</a>
 	{% if invoices_unpaid %}
 		<div class="row">
 			<div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">

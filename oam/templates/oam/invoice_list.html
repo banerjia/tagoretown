@@ -13,7 +13,7 @@
         <tbody>
             {% for invoice in invoice_list %}
             <tr>
-                <td><a href="{% url "oam:invoice_detail" invoice.customer.corp_url_id invoice.id %}">{{ invoice.number }}</a></td>
+                <td><a href="{% url "oam:invoice_detail" invoice.customer.corp_url_id invoice.id %}">{{ invoice.number }} ({{ invoice.num_of_transactions }})</a></td>
                 <td>{{ invoice.date_added|date:"m/j/y" }}</td>
                 <td data-data-type="currency">{{ invoice.amount|currency }}</td>
                 <td data-data-type="currency">{{ invoice.balance_due|currency }}</td>

@@ -17,6 +17,7 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 
+
 urlpatterns = [
     url(r'^oam/(?P<customer_url_id>[a-zA-Z0-9]+)/',
         include('oam.urls')),

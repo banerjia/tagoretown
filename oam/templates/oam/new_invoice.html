@@ -8,12 +8,12 @@
 {% block content %}
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <form method="POST" id="frmEditInvoice">
+            <form method="POST" id="frmNewInvoice">
                 {% csrf_token %}
                 <div class="row form-buttons">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <button class="btn btn-success">Save</button>
-                      	<a href="{% url "oam:invoice_detail" customer_url_id pk %}" class="btn btn-default">Cancel</a>
+                        <a href="{% url "oam:invoices_index" customer_url_id %}" class="btn btn-default">Cancel</a>
                     </div>
                 </div>
                 <div class="row">
@@ -55,15 +55,7 @@
                     <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12 entry-value">
                         {{ form.due_date }}
                     </div>
-                </div>   
-                <div class="row">
-                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 entry-field">
-                        {{ form.date_paid.label_tag }}
-                    </div>
-                    <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12 entry-value">
-                        {{ form.date_paid }}
-                    </div>
-                </div>          
+                </div>            
             </form>
         </div>
     </div>
@@ -73,7 +65,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-    $("form#frmEditInvoice input:text, form#frmEditInvoice select, form#frmEditInvoice textarea").addClass("form-control");
+    $("form#frmNewInvoice input:text, form#frmNewInvoice select, form#frmNewInvoice textarea").addClass("form-control");
 })
 </script>
     

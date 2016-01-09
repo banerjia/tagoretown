@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #   'pipeline',
+    'widget_tweaks',
     'oam.apps.OAMConfig',
 ]
 

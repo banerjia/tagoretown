@@ -72,8 +72,9 @@ class Invoice(models.Model):
     customer = models.ForeignKey('Customer')
     number = models.CharField('Invoice #', max_length=50)
     amount = models.DecimalField(decimal_places=2, max_digits=10)
-    balance_due = models.DecimalField(decimal_places=2, max_digits=10)
     paid = models.BooleanField(default=False)
+    void = models.BooleanField(default=False)
+    invoice_date = models.DateField()
     due_date = models.DateField(default=None, null=True, blank=True)
     date_paid = models.DateField(default=None, null=True, blank=True)
     notes = GenericRelation(Note)
@@ -86,12 +87,20 @@ class Invoice(models.Model):
     def status(self):
         if(self.paid):
             retval = "Paid"
-        elif(self.due_date is not None and self.due_date < timezone.now().date()):
+        elif(self.due_date is not None and
+             self.due_date < timezone.now().date()):
             retval = "Overdue"
         else:
             retval = "Unpaid"
 
         return retval
+
+    def balance_due(self):
+        transaction_total = getattr(self, 'transaction_total', None)
+        if not transaction_total:
+            transaction_total = self.transaction_set.aggregate(
+                models.Sum('amount'))['amount__sum'] or 0
+        return self.amount - transaction_total
 
 
 class Transaction(models.Model):

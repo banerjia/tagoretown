@@ -1,8 +1,14 @@
 {% extends "oam/layout.html" %}
+{% load widget_tweaks %}
 {% load staticfiles %}
 
 {% block styling %}
     <link rel="stylesheet" type="text/css" href="{% static "app/css/detail.css" %}"/>  
+    <style type="text/css">
+        div#content_section span.k-dropdown {
+            width: 100%;
+        }
+    </style>
 {% endblock styling %}
 
 {% block content %}
@@ -10,62 +16,70 @@
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <form method="POST" id="frmNewInvoice">
                 {% csrf_token %}
-                <div class="row form-buttons">
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <button class="btn btn-success">Save</button>
-                        <a href="{% url "oam:invoices_index" customer_url_id %}" class="btn btn-default">Cancel</a>
+                <fieldset class="well">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 entry-field">
+                            {{ form.number.label_tag }}
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 entry-value">
+                            {{ form.number|add_class:"form-control" }}
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 entry-field">
-                        {{ form.number.label_tag }}
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 entry-field">
+                            {{ form.customer.label_tag }}
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 entry-value">
+                            {{ form.customer|append_attr:"style:width:100%'"  }}
+                        </div>
                     </div>
-                    <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12 entry-value">
-                        {{ form.number }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 entry-field">
-                        {{ form.customer.label_tag }}
-                    </div>
-                    <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12 entry-value">
-                        {{ form.customer }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 entry-field">
-                        {{ form.amount.label_tag }}
-                    </div>
-                    <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12 entry-value">
-                        {{ form.amount }}
-                    </div>
-                </div>    
-                <div class="row">
-                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 entry-field">
-                        {{ form.paid.label_tag }}
-                    </div>
-                    <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12 entry-value">
-                        {{ form.paid }}
-                    </div>
-                </div>   
-                <div class="row">
-                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 entry-field">
-                        {{ form.due_date.label_tag }}
-                    </div>
-                    <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12 entry-value">
-                        {{ form.due_date }}
-                    </div>
-                </div>            
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 entry-field">
+                            {{ form.amount.label_tag }}
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 entry-value">
+                            {{ form.amount }}
+                        </div>
+                    </div>    
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 entry-field">
+                            {{ form.paid.label_tag }}
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 entry-value">
+                            {{ form.paid }}
+                        </div>
+                    </div>   
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 entry-field">
+                            {{ form.due_date.label_tag }}
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 entry-value">
+                            {{ form.due_date }}
+                        </div>
+                    </div>  
+
+                    <div class="row form-buttons">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <button class="btn btn-success">Save</button>
+                            <a href="{% url "oam:invoices_index" customer_url_id %}" class="btn btn-default">Cancel</a>
+                        </div>
+                    </div> 
+                </fieldset>         
             </form>
         </div>
     </div>
 {% endblock content %}
 
 {% block js %}
-
 <script type="text/javascript">
 $(document).ready(function(){
-    $("form#frmNewInvoice input:text, form#frmNewInvoice select, form#frmNewInvoice textarea").addClass("form-control");
+    $("form#frmNewInvoice input[id$=_date]").kendoDatePicker();
+    $("form#frmNewInvoice select").kendoDropDownList({
+        width: "100"
+    });
+    $("form#frmNewInvoice input[id$=amount]").kendoNumericTextBox({
+       format: "c"
+    });
 })
 </script>
     

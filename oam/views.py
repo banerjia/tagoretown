@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.db.models import Prefetch, Count, Sum
 from oam.models import Customer, Invoice, Transaction, Note
-from .forms import InvoiceForm
+from .forms import InvoiceForm, TransactionForm
 
 return_dict = {
     'title': None,
@@ -17,10 +17,10 @@ def Http404(request):
 
 def index(request, customer_url_id):
     qs_invoices_base = Invoice.objects.order_by("-date_added").annotate(
-                            num_of_transactions=Count('transaction'),
-                            transaction_total=Sum('transaction__amount')
-                        ).only(
-                        'date_added', 'amount', 'number')
+        num_of_transactions=Count('transaction'),
+        transaction_total=Sum('transaction__amount')
+    ).only(
+        'date_added', 'amount', 'number')
     customer = get_object_or_404(
         Customer.objects
         .prefetch_related(
@@ -45,23 +45,19 @@ def index(request, customer_url_id):
 def detail(request, customer_url_id, pk):
     selected_invoice = get_object_or_404(
         Invoice.objects
+        .only('invoice_date', 'due_date', 'amount', 'customer__corp')
+        .annotate(number_of_notes=Count('notes'))
         .select_related('customer')
         .prefetch_related(
             Prefetch('transaction_set',
                      queryset=Transaction.objects.order_by(
                          "-date_added"),
-                     to_attr="transactions"),
-            Prefetch('notes',
-                     queryset=Note.objects.order_by(
-                         "-date_added"),
-                     to_attr="related_notes")), id=pk)
+                     to_attr="transactions")), id=pk)
     return render(request, r'oam/detail.html', {
         'title': 'Invoice: {0}'.format(selected_invoice.number),
         'browser_title': 'Invoice# {0}'.format(selected_invoice.number),
         'invoice': selected_invoice,
-        'invoice_notes': selected_invoice.related_notes,
         'related_transactions': selected_invoice.transactions,
-        'customer': selected_invoice.customer,
         'customer_url_id': selected_invoice.customer.corp_url_id
     })
 
@@ -109,3 +105,25 @@ def new(request, customer_url_id):
         'customer_url_id': customer_url_id
     })
     return render(request, "oam/new_invoice.html", return_dict)
+
+
+def new_transaction(request, customer_url_id, pk):
+    form = TransactionForm(request.POST or None)
+    if(request.POST):
+        pass
+
+    return_dict.update({
+        'title': 'New Transaction',
+        'form': form,
+        'customer_url_id': customer_url_id,
+        'super_template': "oam/modal_layout.html",
+    })
+    return render(request, 'oam/new_transaction.html', return_dict)
+
+
+def edit_transaction(request, customer_url_id, pk):
+    pass
+
+
+def new_note(request, customer_url_id, pk):
+    pass

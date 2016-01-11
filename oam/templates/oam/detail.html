@@ -24,6 +24,16 @@
 		</style>
 {% endblock %}
 
+{% block js %}
+
+	<script type="text/javascript">
+	$(document).ready(function(){
+		$("div#relatedModel").modal();
+	});
+	</script>
+	
+{% endblock js %}
+
 {% block content %}
 	<div class="row">
 		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -36,59 +46,74 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-					<table class="table table-condensed">
-						<thead>
-							<tr>
-								<th style="width:5%"></th>
-								<th scope="col">Invoice Date</th>
-								<th scope="col">Company</th>
-								<th scope="col">Amount</th>
-								<th scope="col">Balance Due</th>
-								<th scope="col">Due Date</th>
-								<th scope="col">Status</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>
-									<a href="{% url "oam:invoice_edit" invoice.customer.corp_url_id invoice.id %}">
-										<i class="fa fa-edit"></i>
-									</a>
-								</td>
-								<td>{{ invoice.date_added|date:"m/j/Y" }}</td>
-								<td>{{ customer.corp|title }}</td>
-								<td>{{ invoice.amount|currency }}</td>
-								<td>{{ invoice.balance_due|currency }}</td>
-								<td>{{ invoice.due_date|date:"m/j/Y"|default:"No due date"  }}</td>
-								<td style="font-weight: bold" class="text-uppercase {% ifequal invoice.status "Unpaid" %}label label-danger{% endifequal %}{% ifequal invoice.status "Paid" %}bg-success text-white{% endifequal %}">{{ invoice.status }}</td>
-							</tr>
-						</tbody>
-					</table>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-buttons">
+					<div class="well well-sm">
+						<a href="{% url "oam:invoice_edit" customer_url_id invoice.pk %}" class="btn btn-default">Edit Invoice</a>
+						<a href="{% url "oam:invoice_new_note" customer_url_id invoice.pk %}" class="btn btn-default">Add Note</a>
+						<a href="#" class="btn btn-info">Show Notes {{invoice.number_of_notes}}</a>
+					</div>
 				</div>
 			</div>
-			{% if invoice.notes != None %}
 			<div class="row">
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<h3 class="h3">Notes</h3>
-
-					{% include "oam/invoice_note.html" with notes=invoice_notes %}
+					<div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
+						<div class="row">
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 bg-warning text-uppercase h4">Invoice Date</span></div>
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">{{ invoice.invoice_date|date:"m/j/Y" }}</div>
+						</div>
+					</div>
+					<div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
+						<div class="row">
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 bg-warning text-uppercase h4">Company</div>
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">{{ invoice.customer.corp|title }}</div>
+						</div>
+					</div>
+					<div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
+						<div class="row">
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 bg-warning text-uppercase h4">Amount</div>
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">{{ invoice.amount|currency }}</div>
+						</div>
+					</div>
+					<div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
+						<div class="row">
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 bg-warning text-uppercase h4">Balance Due</div>
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">{{ invoice.balance_due|currency }}</div>
+						</div>
+					</div>
+					<div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
+						<div class="row">
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 bg-warning text-uppercase h4">Due Date</div>
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">{{ invoice.due_date|date:"m/j/Y"|default:"No due date"  }}</div>
+						</div>
+					</div>
+					<div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
+						<div class="row">
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 bg-warning text-uppercase h4">Status</div>
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-uppercase {% ifequal invoice.status "Unpaid" %}text-success{% endifequal %}{% ifequal invoice.status "Paid" %}text-success{% endifequal %}">{{ invoice.status }}</div>
+						</div>
+					</div>
 				</div>
 			</div>
-			{% endif %}
 			<div class="row">
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<table class="table table-condensed table-striped table-bordered">
-						<caption style="font-weight: bold">Related Transactions</caption>
+						<caption class="h3">Related Transactions</caption>
 						<thead>
 							<tr>
-								<th style="width: 5%"></th>
-								<th scope="col">Date</th>
-								<th scope="col">Amount</th>
-								<th scope="col">Payment Method</th>
-								<th style="width: 5%"></th>
+								<th class="h4" style="width: 5%"></th>
+								<th class="h4" scope="col">Date</th>
+								<th class="h4" scope="col">Amount</th>
+								<th class="h4" scope="col">Payment Method</th>
+								<th class="h4" style="width: 5%"></th>
 							</tr>
 						</thead>
+						<tfoot>
+							<tr>
+								<td colspan="5">
+									<a href="{% url "oam:invoice_new_transaction" customer_url_id invoice.pk %}" class="btn btn-sm btn-primary" data-ajax="true" data-ajax-target="relatedModal" data-ajax-url="{% url "oam:invoice_new_transaction" customer_url_id invoice.pk %}">Record Transaction</a>
+								</td>
+							</tr>
+						</tfoot>
 						<tbody>
 							{% for transaction in related_transactions %}
 								<tr>
@@ -114,5 +139,7 @@
 				</div>
 			</div>
 		</div>
+	</div>
+	<div id="relatedModel" class="modal fade" role="dialog">
 	</div>
 {% endblock content %}

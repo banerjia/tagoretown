@@ -1,5 +1,5 @@
 from django import forms
-from .models import Invoice
+from .models import Invoice, Transaction
 
 
 # class InvoiceForm(forms.Form):
@@ -15,4 +15,13 @@ class InvoiceForm(forms.ModelForm):
         model = Invoice
         fields = ['number', 'amount', 'paid',
                   'customer', 'due_date', 'date_paid', ]
-        localized_fields = ('amount', 'due_date',)
+        localized_fields = ('amount', 'due_date', )
+
+
+class TransactionForm(forms.ModelForm):
+
+    class Meta:
+        model = Transaction
+        fields = ['amount', 'payment_type', ]
+
+        localized_fields = ('amount', 'date_added', )

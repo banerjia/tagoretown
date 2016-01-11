@@ -1,7 +1,7 @@
 {% for note in notes  %}
- <p>
-    <strong>Dated:</strong> {{ note.date_added|date:"m/j/Y h:m A" }}<br/>
-    {{ note.text }}
-</p>   
+ <blockquote>
+     {{ note.text }}
+     <footer>{{ note.date_added|date:"m/j/Y h:m A" }}</footer>
+ </blockquote>
 {% endfor %}
 

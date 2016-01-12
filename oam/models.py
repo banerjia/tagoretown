@@ -7,8 +7,10 @@ from django.contrib.contenttypes.models import ContentType
 import locale
 
 # Create your models here.
-
-locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+try:
+  locale.setlocale(locale.LC_ALL, 'en_US.utf8')
+except:
+  pass
 
 
 class Note(models.Model):

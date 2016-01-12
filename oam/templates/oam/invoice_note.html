@@ -1,7 +1,9 @@
-{% for note in notes  %}
- <blockquote>
-     {{ note.text }}
-     <footer>{{ note.date_added|date:"m/j/Y h:m A" }}</footer>
- </blockquote>
-{% endfor %}
+<div class="list-group">
+	{% for note in notes.all  %}
+	<p class="list-item-item">
+		{{ note.text }}
+	</p>
+	{% endfor %}	
+</div>
+
 

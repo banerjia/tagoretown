@@ -1,12 +1,5 @@
 from django import forms
-from .models import Invoice, Transaction
-
-
-# class InvoiceForm(forms.Form):
-# number = forms.CharField(label="Invoice #", max_length=50)
-#    date_added = forms.DateField(label="Invoice Date")
-#    amount = forms.DecimalField(label="Amount")
-#    paid = forms.BooleanField(label="Paid")
+from .models import Invoice, Note, Transaction
 
 
 class InvoiceForm(forms.ModelForm):
@@ -25,3 +18,10 @@ class TransactionForm(forms.ModelForm):
         fields = ['amount', 'payment_type', ]
 
         localized_fields = ('amount', 'date_added', )
+
+
+class NoteForm(forms.ModelForm):
+
+	class Meta:
+		model = Note
+		fields = ['text',]

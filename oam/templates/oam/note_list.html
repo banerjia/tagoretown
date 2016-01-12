@@ -1,0 +1,9 @@
+{% extends super_template|default:"oam/layout.html" %}
+
+{% block content %}
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">	
+		{% include "oam/invoice_note.html" with notes=notes %}
+		</div>
+	</div>
+{% endblock content %}

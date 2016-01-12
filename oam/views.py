@@ -126,4 +126,22 @@ def edit_transaction(request, customer_url_id, pk):
 
 
 def new_note(request, customer_url_id, pk):
-    pass
+    form = NoteForm(request.POST or None)
+    if(request.POST):
+        pass
+
+
+    return render(request, "oam/invoice_new_note.html", return_dict)
+
+def notes(request, customer_url_id, pk):
+    selected_invoice = Invoice.objects.only('number').prefetch_related( 
+                        Prefetch('notes', 
+                            queryset=Note.objects.only('text','date_added').order_by("-date_added"))).get(pk=pk)
+    return_dict.update({
+        'title': 'Notes for Invoice# {}'.format(selected_invoice.number),
+        'notes': selected_invoice.notes,
+        'customer_url_id': customer_url_id,
+        'super_template': "oam/modal_layout.html",
+        })
+
+    return render(request, "oam/note_list.html", return_dict)

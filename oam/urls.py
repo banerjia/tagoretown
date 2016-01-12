@@ -14,6 +14,8 @@ urlpatterns = [
         views.new_transaction, name="invoice_new_transaction"),
     url(r'^invoice/(?P<pk>[0-9]+)/transaction/(?P<transaction_id>[0-9]+)/edit$',
         views.edit_transaction, name="invoice_edit_transaction"),
+    url(r'^invoice/(?P<pk>[0-9]+)/notes$',
+        views.notes, name="invoice_notes"),
     url(r'^invoice/(?P<pk>[0-9]+)/new/note$',
         views.new_note, name="invoice_new_note"),
 ]

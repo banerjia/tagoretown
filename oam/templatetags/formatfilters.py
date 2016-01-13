@@ -1,6 +1,11 @@
 from django import template
 import locale
-locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+
+try:
+  locale.setlocale(locale.LC_ALL, 'en_US.utf8')
+except:
+  pass
+
 register = template.Library()
 
 

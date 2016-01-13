@@ -1,20 +1,17 @@
 {
   "name": "tagoretown",
   "description": "",
-  "main": "index.js",
-  "authors": [
-    "Abhishek Banerji"
-  ],
-  "license": "ISC",
-  "homepage": "https://github.com/banerjia/tagoretown",
-  "moduleType": [
-    "amd"
-  ],
+  "main": "Gruntfile.js",
   "ignore": [
     "**/.*",
     "node_modules",
     "bower_components",
     "test",
     "tests"
-  ]
+  ],
+  "devDependencies": {
+    "jquery": "~2.2.0",
+    "bootstrap": "~3.3.6",
+    "font-awesome": "fontawesome#~4.5.0"
+  }
 }

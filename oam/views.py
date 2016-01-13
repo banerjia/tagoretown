@@ -77,10 +77,12 @@ def edit(request, customer_url_id, pk):
                             saved_invoice.customer.corp_url_id,
                             'pk': pk}))
 
-    return_dict.update({'form': form,
-                        'customer_url_id': customer_url_id,
-                        'pk': pk
-                        })
+    return_dict.update({
+        'title': 'Edit Invoice# {}'.format(invoice.number),
+        'form': form,
+        'customer_url_id': customer_url_id,
+        'pk': pk
+    })
     return render(request, "oam/edit_invoice.html", return_dict)
 
 
@@ -108,12 +110,13 @@ def new(request, customer_url_id):
 
 
 def new_transaction(request, customer_url_id, pk):
+    invoice = Invoice.objects.only('number').get(pk=pk)
     form = TransactionForm(request.POST or None)
     if(request.POST):
         pass
 
     return_dict.update({
-        'title': 'New Transaction',
+        'title': 'New Transaction for Invoice# {}'.format(invoice.number),
         'form': form,
         'customer_url_id': customer_url_id,
         'super_template': "oam/modal_layout.html",
@@ -130,18 +133,18 @@ def new_note(request, customer_url_id, pk):
     if(request.POST):
         pass
 
-
     return render(request, "oam/invoice_new_note.html", return_dict)
 
+
 def notes(request, customer_url_id, pk):
-    selected_invoice = Invoice.objects.only('number').prefetch_related( 
-                        Prefetch('notes', 
-                            queryset=Note.objects.only('text','date_added').order_by("-date_added"))).get(pk=pk)
+    selected_invoice = Invoice.objects.only('number').prefetch_related(
+        Prefetch('notes',
+                 queryset=Note.objects.only('text', 'date_added').order_by("-date_added"))).get(pk=pk)
     return_dict.update({
         'title': 'Notes for Invoice# {}'.format(selected_invoice.number),
         'notes': selected_invoice.notes,
         'customer_url_id': customer_url_id,
         'super_template': "oam/modal_layout.html",
-        })
+    })
 
     return render(request, "oam/note_list.html", return_dict)

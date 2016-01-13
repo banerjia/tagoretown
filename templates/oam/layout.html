@@ -3,10 +3,8 @@
 <html>
 	<head>
 		<title>TT > OAM > {{ browser_title|default:title|default:'Home' }}</title>
-		<link rel="stylesheet" type="text/css" href="{% static "bootstrap/css/bootstrap-superhero.min.css" %}"/>
-		<link rel="stylesheet" href="{% static "fontawesome/css/font-awesome.min.css" %}" />
 		<link rel="stylesheet" type="text/css" href="https://kendo.cdn.telerik.com/2015.3.1111/styles/kendo.common.min.css"/>
-		
+		<link rel="stylesheet" type="text/css" href="{% static "css/app.min.css" %}"/>
 		<link href="http://cdn.kendostatic.com/2015.3.1111/styles/kendo.bootstrap.min.css" rel="stylesheet" />
 		{% block styling %}
 		{% endblock styling %}
@@ -47,8 +45,7 @@
 				</div>
 			</div>
 		</div>
-		<script type="text/javascript" src="{% static "js/jquery-2.1.4.min.js" %}"></script>
-		<script type="text/javascript" src="{% static "bootstrap/js/bootstrap.min.js" %}"></script>
+		<script type="text/javascript" src="{% static "js/app.min.js" %}"></script>
 		<script type="text/javascript" src="https://kendo.cdn.telerik.com/2014.1.318/js/kendo.all.min.js"></script>
 		{% block js %}
 		{% endblock js %}

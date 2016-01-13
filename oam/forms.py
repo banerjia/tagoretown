@@ -22,6 +22,6 @@ class TransactionForm(forms.ModelForm):
 
 class NoteForm(forms.ModelForm):
 
-	class Meta:
-		model = Note
-		fields = ['text',]
+    class Meta:
+        model = Note
+        fields = ['text', ]

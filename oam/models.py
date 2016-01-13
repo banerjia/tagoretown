@@ -8,9 +8,9 @@ import locale
 
 # Create your models here.
 try:
-  locale.setlocale(locale.LC_ALL, 'en_US.utf8')
+    locale.setlocale(locale.LC_ALL, 'en_US.utf8')
 except:
-  pass
+    pass
 
 
 class Note(models.Model):

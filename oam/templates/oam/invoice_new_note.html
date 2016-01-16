@@ -1,0 +1,30 @@
+{% extends super_template|default:"oam/layout.html" %}
+{% load widget_tweaks %}
+{% load staticfiles %}
+
+{% block styling %}
+    <link rel="stylesheet" type="text/css" href="{% static "app/css/detail.css" %}"/>  
+    <style type="text/css">
+        div#content_section span.k-dropdown {
+            width: 100%;
+        }
+    </style>
+{% endblock styling %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <form method="POST" id="frmNewInvoice">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 entry-field">
+                        {{ form.text.label_tag }}
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 entry-value">
+                        {{ form.text|add_class:"form-control" }}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock content %}

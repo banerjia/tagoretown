@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.db.models import Prefetch, Count, Sum
 from oam.models import Customer, Invoice, Transaction, Note
-from .forms import InvoiceForm, TransactionForm
+from .forms import InvoiceForm, TransactionForm, NoteForm
 
 return_dict = {
     'title': None,
@@ -129,10 +129,17 @@ def edit_transaction(request, customer_url_id, pk):
 
 
 def new_note(request, customer_url_id, pk):
+    invoice = Invoice.objects.only('number').get(pk=pk)
     form = NoteForm(request.POST or None)
     if(request.POST):
         pass
 
+    return_dict.update({
+        'title': 'New Note for Invoice# {}'.format(invoice.number),
+        'form': form,
+        'customer_url_id': customer_url_id,
+        'super_template': "oam/modal_layout.html",
+    })
     return render(request, "oam/invoice_new_note.html", return_dict)
 
 

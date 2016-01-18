@@ -131,14 +131,24 @@ def edit_transaction(request, customer_url_id, pk):
 def new_note(request, customer_url_id, pk):
     invoice = Invoice.objects.only('number').get(pk=pk)
     form = NoteForm(request.POST or None)
-    if(request.POST):
-        pass
+    if request.POST:
+        if form.is_valid():
+            invoice.notes.create(text=form.cleaned_data['text'])
+            invoice.save()
+            return HttpResponseRedirect(
+                reverse("oam:invoice_detail",
+                        kwargs={'customer_url_id':
+                                customer_url_id,
+                                'pk': pk}))
 
     return_dict.update({
         'title': 'New Note for Invoice# {}'.format(invoice.number),
         'form': form,
         'customer_url_id': customer_url_id,
         'super_template': "oam/modal_layout.html",
+        'post_url': reverse("oam:invoice_new_note",
+                            kwargs={'customer_url_id': customer_url_id,
+                                    'pk': pk})
     })
     return render(request, "oam/invoice_new_note.html", return_dict)
 

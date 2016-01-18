@@ -25,3 +25,7 @@ class NoteForm(forms.ModelForm):
     class Meta:
         model = Note
         fields = ['text', ]
+
+        labels = {
+            'text': 'Notes',
+        }

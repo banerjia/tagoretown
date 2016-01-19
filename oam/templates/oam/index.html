@@ -6,7 +6,7 @@
 		<div class="row">
 			<div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
 				<h3 class="h3">Outstanding Invoices</h3>
-				{% include "oam/invoice_list.html" with invoice_list=invoices_unpaid %}
+				{% include "oam/invoice/list.html" with invoice_list=invoices_unpaid %}
 			</div>
 		</div>	
 	{% endif %}
@@ -15,7 +15,7 @@
 		<div class="row">
 			<div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
 				<h3 class="h3">Paid Invoices</h3>
-				{% include "oam/invoice_list.html" with invoice_list=invoices_paid %}
+				{% include "oam/invoice/list.html" with invoice_list=invoices_paid %}
 			</div>
 		</div>
 	{% endif %}

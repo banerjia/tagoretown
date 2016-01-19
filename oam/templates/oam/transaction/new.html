@@ -1,0 +1,35 @@
+{% extends super_template|default:"oam/layout.html" %}
+{% load widget_tweaks %}
+{% load staticfiles %}
+
+{% block content %}
+    <form method="POST" id="frmNewTransaction" action="{{ post_url|default:None }}" >
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        	<div class="row">
+        		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 entry-label">{{ form.payment_type.label_tag }}</div>
+        		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 entry-value">
+        			{{ form.payment_type }}
+        		</div>
+        	</div>
+        	<div class="row">
+        		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 entry-label">{{ form.amount.label_tag }}</div>
+        		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 entry-value">
+        			{{ form.amount }}
+        		</div>
+        	</div>
+        	<div class="row">
+        		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 entry-label">{{ form.transaction_note.label_tag }}</div>
+        		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 entry-value">{{ form.transaction_note|add_class:"form-control" }}</div>
+        	</div>
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-buttons">
+                    <button class="btn btn-success">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </form>
+{% endblock content %}

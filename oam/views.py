@@ -53,7 +53,7 @@ def detail(request, customer_url_id, pk):
                      queryset=Transaction.objects.order_by(
                          "-date_added"),
                      to_attr="transactions")), id=pk)
-    return render(request, r'oam/detail.html', {
+    return render(request, r'oam/invoice/detail.html', {
         'title': 'Invoice: {0}'.format(selected_invoice.number),
         'browser_title': 'Invoice# {0}'.format(selected_invoice.number),
         'invoice': selected_invoice,
@@ -83,7 +83,7 @@ def edit(request, customer_url_id, pk):
         'customer_url_id': customer_url_id,
         'pk': pk
     })
-    return render(request, "oam/edit_invoice.html", return_dict)
+    return render(request, "oam/invoice/edit.html", return_dict)
 
 
 def new(request, customer_url_id):
@@ -106,22 +106,33 @@ def new(request, customer_url_id):
         'form': form,
         'customer_url_id': customer_url_id
     })
-    return render(request, "oam/new_invoice.html", return_dict)
+    return render(request, "oam/invoice/new.html", return_dict)
 
 
 def new_transaction(request, customer_url_id, pk):
     invoice = Invoice.objects.only('number').get(pk=pk)
     form = TransactionForm(request.POST or None)
     if(request.POST):
-        pass
+        invoice.transaction_set.create(
+            amount=form.cleaned_data['amount'],
+            payment_type=form.cleaned_data['payment_type'])
+        invoice.save()
+        return HttpResponseRedirect(
+            reverse("oam:invoice_detail",
+                    kwargs={'customer_url_id':
+                            customer_url_id,
+                            'pk': pk}))
 
     return_dict.update({
         'title': 'New Transaction for Invoice# {}'.format(invoice.number),
         'form': form,
         'customer_url_id': customer_url_id,
         'super_template': "oam/modal_layout.html",
+        'post_url': reverse("oam:invoice_new_transaction",
+                            kwargs={'customer_url_id': customer_url_id,
+                                    'pk': pk})
     })
-    return render(request, 'oam/new_transaction.html', return_dict)
+    return render(request, 'oam/transaction/new.html', return_dict)
 
 
 def edit_transaction(request, customer_url_id, pk):
@@ -150,18 +161,21 @@ def new_note(request, customer_url_id, pk):
                             kwargs={'customer_url_id': customer_url_id,
                                     'pk': pk})
     })
-    return render(request, "oam/invoice_new_note.html", return_dict)
+    return render(request, "oam/note/new.html", return_dict)
 
 
 def notes(request, customer_url_id, pk):
     selected_invoice = Invoice.objects.only('number').prefetch_related(
         Prefetch('notes',
-                 queryset=Note.objects.only('text', 'date_added').order_by("-date_added"))).get(pk=pk)
+                 queryset=Note.objects.only(
+                     'text', 'date_added')
+                 .order_by("-date_added"))) \
+        .get(pk=pk)
     return_dict.update({
         'title': 'Notes for Invoice# {}'.format(selected_invoice.number),
-        'notes': selected_invoice.notes,
+        'notes': selected_invoice.notes.all(),
         'customer_url_id': customer_url_id,
         'super_template': "oam/modal_layout.html",
     })
 
-    return render(request, "oam/note_list.html", return_dict)
+    return render(request, "oam/note/list.html", return_dict)

@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.db.models import Prefetch, Count, Sum
+from django.utils import timezone
 from oam.models import Customer, Invoice, Transaction, Note
 from .forms import InvoiceForm, TransactionForm, NoteForm
 
@@ -112,22 +113,27 @@ def new(request, customer_url_id):
 def new_transaction(request, customer_url_id, pk):
     invoice = Invoice.objects.only('number').get(pk=pk)
     form = TransactionForm(request.POST or None)
-    if(request.POST):
-        invoice.transaction_set.create(
-            amount=form.cleaned_data['amount'],
-            payment_type=form.cleaned_data['payment_type'])
-        invoice.save()
-        return HttpResponseRedirect(
-            reverse("oam:invoice_detail",
-                    kwargs={'customer_url_id':
-                            customer_url_id,
-                            'pk': pk}))
+    if request.POST:
+        if form.is_valid():
+            invoice.transaction_set.create(
+                amount=form.cleaned_data['amount'],
+                payment_type=form.cleaned_data['payment_type'],
+                date_added=timezone.now())
+            invoice.save()
+            return HttpResponseRedirect(
+                reverse("oam:invoice_detail",
+                        kwargs={'customer_url_id':
+                                customer_url_id,
+                                'pk': pk}))
+    else:
+        return_dict.update({
+            'super_template': "oam/modal_layout.html",
+            })
 
     return_dict.update({
         'title': 'New Transaction for Invoice# {}'.format(invoice.number),
         'form': form,
         'customer_url_id': customer_url_id,
-        'super_template': "oam/modal_layout.html",
         'post_url': reverse("oam:invoice_new_transaction",
                             kwargs={'customer_url_id': customer_url_id,
                                     'pk': pk})

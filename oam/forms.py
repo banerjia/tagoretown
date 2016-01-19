@@ -13,7 +13,9 @@ class InvoiceForm(forms.ModelForm):
 
 class TransactionForm(forms.ModelForm):
     transaction_note = forms.CharField(
-        label='Transaction Note', widget=forms.Textarea)
+        label='Transaction Note',
+        widget=forms.Textarea,
+        required=False)
 
     class Meta:
         model = Transaction

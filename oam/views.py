@@ -59,7 +59,8 @@ def detail(request, customer_url_id, pk):
         'browser_title': 'Invoice# {0}'.format(selected_invoice.number),
         'invoice': selected_invoice,
         'related_transactions': selected_invoice.transactions,
-        'customer_url_id': selected_invoice.customer.corp_url_id
+        'customer_url_id': selected_invoice.customer.corp_url_id,
+        'customer_name': selected_invoice.customer.corp,
     })
 
 

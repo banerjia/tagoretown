@@ -20,7 +20,7 @@
 	                    <span class="icon-bar"></span>
 	                </button>
 	                <a class="navbar-brand" href="{% url "oam:invoices_index" customer_url_id|default:'graeters'  %}">
-		                <span class="hidden-sm hidden-xs">Online Account Management</span>
+		                <span class="hidden-sm hidden-xs">Online Account Management {% if customer_name %} ({{customer_name}}) {% endif %}</span>
 						<span class="hidden-lg hidden-md">OAM</span>
 					</a>
 	            </div>
